@@ -104,6 +104,7 @@ extern Node *push(Node *node);
 extern Node *top(void);
 extern Node *pop(void);
 
+extern void  Rule_compile_header(void);
 extern void  Rule_compile_c_header(void);
 extern void  Rule_compile_c(Node *node);
 

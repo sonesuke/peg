@@ -1328,6 +1328,7 @@ static void usage(char *name)
   version(name);
   fprintf(stderr, "usage: %s [<option>...] [<file>...]\n", name);
   fprintf(stderr, "where <option> can be\n");
+  fprintf(stderr, "  -n          no std c header files\n");
   fprintf(stderr, "  -h          print this help information\n");
   fprintf(stderr, "  -o <ofile>  write output to <ofile>\n");
   fprintf(stderr, "  -v          be verbose\n");
@@ -1341,16 +1342,22 @@ int main(int argc, char **argv)
 {
   Node *n;
   int   c;
+  int   nostdHeader;
 
+  nostdHeader = 0;
   output= stdout;
   input= stdin;
   lineNumber= 1;
   fileName= "<stdin>";
 
-  while (-1 != (c= getopt(argc, argv, "Vho:v")))
+  while (-1 != (c= getopt(argc, argv, "nVho:v")))
     {
       switch (c)
 	{
+	case 'n':
+          nostdHeader = 1;
+	  break;
+
 	case 'V':
 	  version(basename(argv[0]));
 	  exit(0);
@@ -1412,7 +1419,9 @@ int main(int argc, char **argv)
     for (n= rules;  n;  n= n->any.next)
       Rule_print(n);
 
-  Rule_compile_c_header();
+  Rule_compile_header();
+  if (!nostdHeader)
+      Rule_compile_c_header();
 
   for (; headers;  headers= headers->next)
     fprintf(output, "%s\n", headers->text);
